@@ -89,3 +89,11 @@
 	reagents_list = list(/datum/reagent/medicine/c2/synthflesh = 10)
 	build_path = /obj/item/organ/tongue/skrell
 	category = list(RND_CATEGORY_LIMBS_OTHER, RND_CATEGORY_INITIAL, SPECIES_SKRELL)
+
+/datum/design/drask_tongue
+	name = "Drask Tongue"
+	id = "drasktongue"
+	build_type = LIMBGROWER
+	reagents_list = list(/datum/reagent/medicine/c2/synthflesh = 10)
+	build_path = /obj/item/organ/tongue/drask
+	category = list(RND_CATEGORY_LIMBS_OTHER, RND_CATEGORY_INITIAL, SPECIES_DRASK)
