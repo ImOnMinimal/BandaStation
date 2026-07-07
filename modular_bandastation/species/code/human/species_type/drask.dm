@@ -5,7 +5,7 @@
 	inherent_traits = list(
 		TRAIT_MUTANT_COLORS,
 		TRAIT_RESISTCOLD,
-		TRAIT_MINOR_NIGHT_VISION
+		TRAIT_LUMINESCENT_EYES
 	)
 	inherent_biotypes = MOB_ORGANIC | MOB_HUMANOID
 	changesource_flags = MIRROR_BADMIN | WABBAJACK | MIRROR_MAGIC | MIRROR_PRIDE | ERT_SPAWN | RACE_SWAP | SLIME_EXTRACT
@@ -46,14 +46,6 @@
 	T.Insert(human, special = TRUE)
 
 	human.update_body(is_creating = TRUE)
-
-/datum/species/skrell/randomize_features()
-	var/list/features = ..()
-	features[FEATURE_SKRELL_CLOTH_WRAP_TOGGLE] = prob(50) ? pick(SSaccessories.feature_list[FEATURE_SKRELL_CLOTH_WRAP_TOGGLE]) : SPRITE_ACCESSORY_NONE
-
-	var/cloth_color = "#[random_color()]"
-	features[FEATURE_SKRELL_CLOTH_WRAP_COLOR] = cloth_color
-	return features
 
 /datum/species/skrell/create_pref_unique_perks()
 	var/list/to_add = list()
