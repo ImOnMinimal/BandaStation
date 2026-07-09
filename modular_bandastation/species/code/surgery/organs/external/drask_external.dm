@@ -5,7 +5,7 @@
 	icon = 'icons/bandastation/mob/species/drask/sprite_accessories/arm_spines.dmi'
 	icon_state = "m_drask_arm_spines_FRONT"
 
-	zone = BODY_ZONE_L_ARM
+	zone = BODY_ZONE_CHEST
 	slot = ORGAN_SLOT_EXTERNAL_ARM_SPINES
 
 	dna_block = /datum/dna_block/feature/accessory/drask_arm_spines
@@ -14,20 +14,7 @@
 	bodypart_overlay = /datum/bodypart_overlay/mutant/arm_spines
 
 	organ_flags = parent_type::organ_flags | ORGAN_EXTERNAL | ORGAN_UNREMOVABLE
-
-/obj/item/organ/arm_spines/on_mob_insert(mob/living/carbon/receiver)
-	. = ..()
-	var/color = receiver.dna.features[FEATURE_DRASK_ARM_SPINES_COLOR] || "#66FFAA"
-	set_light(1.5, 0.5, color)
-	// if(ishuman(receiver))
-	// 	var/mob/living/carbon/human/H = receiver
-	// 	H.update_body()
-
-/obj/item/organ/arm_spines/proc/update_color(new_color)
-	if(!new_color)
-		return
-	if(owner)
-		set_light(1.5, 0.5, new_color)
+	var/mutable_appearance/cached_glow
 
 /datum/bodypart_overlay/mutant/arm_spines
 	layers = EXTERNAL_FRONT
@@ -44,3 +31,21 @@
 	if(!.)
 		return FALSE
 	return TRUE
+
+/datum/bodypart_overlay/mutant/arm_spines/get_overlay(layer, obj/item/bodypart/limb)
+    var/image/main_image = get_image(layer, limb)
+    color_image(main_image, layer, limb)
+
+    var/list/overlays = list(main_image)
+
+    var/mutable_appearance/emissive = emissive_appearance(
+        main_image.icon,
+        main_image.icon_state,
+        limb,
+        layer = main_image.layer,
+        alpha = main_image.alpha,
+        effect_type = EMISSIVE_BLOOM
+    )
+    overlays += emissive
+
+    return overlays
