@@ -1,3 +1,8 @@
+// Sprite author:
+// Telegram: @cluwnya
+// https://t.me/Lolo42T_CH
+// Discord: t_ch42
+
 /datum/species/drask
 	name = "\improper Драск"
 	plural_form = "Драски"
