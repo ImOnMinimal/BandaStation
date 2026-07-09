@@ -90,6 +90,7 @@
 	build_path = /obj/item/organ/tongue/skrell
 	category = list(RND_CATEGORY_LIMBS_OTHER, RND_CATEGORY_INITIAL, SPECIES_SKRELL)
 
+// MARK: Drask designs
 /datum/design/drask_tongue
 	name = "Drask Tongue"
 	id = "drasktongue"

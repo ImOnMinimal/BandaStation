@@ -105,6 +105,9 @@
 #define FEATURE_SKRELL_CLOTH_WRAP "skrell_cloth_wrap"
 #define FEATURE_SKRELL_CLOTH_WRAP_TOGGLE "skrell_cloth_wrap_toggle"
 #define FEATURE_SKRELL_CLOTH_WRAP_COLOR "skrell_cloth_wrap_color"
+
+#define FEATURE_DRASK_ARM_SPINES "drask_arm_spines"
+#define FEATURE_DRASK_ARM_SPINES_COLOR "drask_arm_spines_color"
 // BANDASTATION ADDITION END - Species Features
 
 // flag for the transfer_flag argument from dna/proc/copy_dna().
@@ -160,6 +163,8 @@
 #define ORGAN_SLOT_EXTERNAL_HEAD_TENTACLE "head_tentacles"
 #define ORGAN_SLOT_EXTERNAL_HEAD_TENTACLE_ORNAMENT "tentacle_ornament"
 #define ORGAN_SLOT_EXTERNAL_HEAD_CLOTH_WRAP "cloth_wrap"
+
+#define ORGAN_SLOT_EXTERNAL_ARM_SPINES "arm_spines"
 /// BADNASTATION ADDITION END - Species
 
 /// Xenomorph organ slots

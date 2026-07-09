@@ -18,11 +18,9 @@
 	mutanttongue = /obj/item/organ/tongue/drask
 	mutantliver = /obj/item/organ/liver/drask
 	mutantstomach = /obj/item/organ/stomach/drask
-	// mutant_organs = list(
-	// 	/obj/item/organ/head_tentacle = /datum/sprite_accessory/skrell_head_tentacle/short::name,
-	// 	/obj/item/organ/cloth_wrap = /datum/sprite_accessory/skrell_cloth_wrap/short::name,
-	// 	/obj/item/organ/tentacle_ornament = /datum/sprite_accessory/skrell_tentacle_ornament/none::name,
-	// )
+	mutant_organs = list(
+		/obj/item/organ/arm_spines = /datum/sprite_accessory/drask_arm_spines/default::name,
+	)
 	exotic_bloodtype = BLOOD_TYPE_SKRELL
 
 	bodypart_overrides = list(
@@ -35,17 +33,24 @@
 	)
 	payday_modifier = 1
 
-/datum/species/skrell/prepare_human_for_preview(mob/living/carbon/human/human)
-	human.dna.features[FEATURE_MUTANT_COLOR] = COLOR_TRUE_BLUE
-	human.dna.features[FEATURE_SKRELL_HEAD_TENTACLE] = /datum/sprite_accessory/skrell_head_tentacle/long::name
-/// When creating a picture for the preferences UI, organs are created first, and only then dna.features are given
+/datum/species/drask/prepare_human_for_preview(mob/living/carbon/human/human)
+	human.dna.features[FEATURE_DRASK_ARM_SPINES_COLOR] = "#66FFAA"
+	human.dna.features[FEATURE_DRASK_ARM_SPINES] = /datum/sprite_accessory/drask_arm_spines/default::name
 	for(var/obj/item/organ/O in human.organs)
-		if(istype(O, /obj/item/organ/head_tentacle) || istype(O, /obj/item/organ/tentacle_ornament) || istype(O, /obj/item/organ/cloth_wrap))
+		if(istype(O, /obj/item/organ/arm_spines))
 			qdel(O)
-	var/obj/item/organ/head_tentacle/T = new()
+	var/obj/item/organ/arm_spines/T = new()
 	T.Insert(human, special = TRUE)
 
 	human.update_body(is_creating = TRUE)
+
+/datum/species/drask/randomize_features()
+	var/list/features = ..()
+	features[FEATURE_DRASK_ARM_SPINES] = pick(
+		/datum/sprite_accessory/drask_arm_spines/default::name,
+		/datum/sprite_accessory/drask_arm_spines/default1::name,
+	)
+	return features
 
 /datum/species/skrell/create_pref_unique_perks()
 	var/list/to_add = list()

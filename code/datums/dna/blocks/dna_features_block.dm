@@ -230,4 +230,18 @@
 
 /datum/dna_block/feature/skrell_cloth_wrap_color/apply_to_mob(mob/living/carbon/human/target, dna_hash)
 	target.dna.features[feature_key] = sanitize_hexcolor(get_block(dna_hash))
+
+// MARK: Drask
+/datum/dna_block/feature/accessory/drask_arm_spines
+	feature_key = FEATURE_DRASK_ARM_SPINES
+
+/datum/dna_block/feature/drask_arm_spines_color
+	block_length = DNA_BLOCK_SIZE_COLOR
+	feature_key = FEATURE_DRASK_ARM_SPINES_COLOR
+
+/datum/dna_block/feature/drask_arm_spines_color/create_unique_block(mob/living/carbon/human/target)
+	return sanitize_hexcolor(target.dna.features[feature_key], include_crunch = FALSE)
+
+/datum/dna_block/feature/drask_arm_spines_color/apply_to_mob(mob/living/carbon/human/target, dna_hash)
+	target.dna.features[feature_key] = sanitize_hexcolor(get_block(dna_hash))
 // BANDASTATION ADD END - Species

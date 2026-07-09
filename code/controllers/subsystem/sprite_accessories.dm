@@ -124,6 +124,9 @@ SUBSYSTEM_DEF(accessories) // just 'accessories' for brevity
 	feature_list[FEATURE_SKRELL_HEAD_TENTACLE_ORNAMENT] = INIT_ACCESSORY(/datum/sprite_accessory/skrell_tentacle_ornament)
 	feature_list[FEATURE_SKRELL_CLOTH_WRAP] = INIT_ACCESSORY(/datum/sprite_accessory/skrell_cloth_wrap)
 	feature_list[FEATURE_SKRELL_CLOTH_WRAP_TOGGLE] = INIT_ACCESSORY(/datum/sprite_accessory/skrell_cloth_wrap_toggle)
+
+	// drask
+	feature_list[FEATURE_DRASK_ARM_SPINES] = INIT_ACCESSORY(/datum/sprite_accessory/drask_arm_spines)
 	/// BANDASTATION ADDITION END - Species
 
 /// This proc just initializes all /datum/sprite_accessory/hair_gradient into an list indexed by gradient-style name

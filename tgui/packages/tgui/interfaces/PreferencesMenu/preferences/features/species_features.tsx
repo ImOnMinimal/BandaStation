@@ -281,3 +281,9 @@ export const skrell_cloth_wrap_color: Feature<string> = {
   name: 'Ткань для щупалец: цвет',
   component: FeatureColorInput,
 };
+
+// MARK: Drask features
+export const drask_arm_spines_color: Feature<string> = {
+  name: 'Шипы драска - цвет',
+  component: FeatureColorInput,
+};

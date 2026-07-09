@@ -30,6 +30,8 @@
 #include "code/human/sprite_accessories/tajaran/tajaran_tail_markings.dm"
 #include "code/human/sprite_accessories/tajaran/tajaran_tails.dm"
 
+#include "code/human/sprite_accessories/drask/drask_arm_spines.dm"
+
 #include "code/human/sprite_accessories/hair.dm"
 #include "code/human/blood_types.dm"
 #include "code/human/carbon.dm"
@@ -67,6 +69,9 @@
 #include "code/preferences/species_features/vulpkanin/tail_markings/vulpkanin_tail_markings.dm"
 #include "code/preferences/species_features/vulpkanin/tail_markings/vulpkanin_tail_markings_color.dm"
 
+#include "code/preferences/species_features/drask/drask_arm_spines.dm"
+#include "code/preferences/species_features/drask/drask_arm_spines_color.dm"
+
 #include "code/reagents/mutation.dm"
 
 #include "code/surgery/bodyparts/drask_bodyparts.dm"
@@ -80,6 +85,7 @@
 #include "code/surgery/organs/external/tajaran_external.dm"
 #include "code/surgery/organs/internal/tajaran_internal.dm"
 #include "code/surgery/organs/internal/skrell_internal.dm"
+#include "code/surgery/organs/external/drask_external.dm"
 #include "code/surgery/organs/internal/drask_internal.dm"
 #include "code/surgery/organs/limbgrower_designs.dm"
 
