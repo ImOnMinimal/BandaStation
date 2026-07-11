@@ -57,7 +57,7 @@
 	)
 	return features
 
-/datum/species/skrell/create_pref_unique_perks()
+/datum/species/drask/create_pref_unique_perks()
 	var/list/to_add = list()
 
 	to_add += list(
@@ -82,17 +82,17 @@
 	)
 	return to_add
 
-/datum/species/skrell/get_physical_attributes()
+/datum/species/drask/get_physical_attributes()
 	return "Скреллы представляют собой двуногих гуманоидов, \
 		отличительной которых есть наличе мешочка в их головных щупальцах а так же полная непереносимость алкоголя"
 
-/datum/species/skrell/get_species_description()
+/datum/species/drask/get_species_description()
 	return "Скреллы - вид амфибий, родом с Кверрбалака, влажной тропической планеты, полной болот и архипелагов. \
 	Скреллы это высокоразвитая и разумная раса, живущая под властью Кверр-Кэтиш, главного правительственного органа.<br/><br/> \
 	Скреллы травоядны и изобильны по своей природе благодаря главным постулатам скреллской культуры. \
 	Хотя Скреллы предпочитают дипломатию, они участвуют в крупнейшем военном союзе в галактике - Человеко-Скреллаинском Альянсе."
 
-/datum/species/skrell/get_species_lore()
+/datum/species/drask/get_species_lore()
 	return list(
 		"Скреллианская Империя – надгосударственный союз скреллианских городов-государств, \
 			княжеств и небольших королевств. Империя всю свою историю является децентрализованным образованием \
@@ -147,3 +147,25 @@
 			но в истории были и случаи открытых карательных экспедиций, собранных с ОСС по всей Империи для \
 			недопущения образования центров объединения и, как следствие, общественного прогресса."
 	)
+
+// /datum/species/drask/on_species_gain(mob/living/carbon/human/H, datum/species/old_species, pref_load, regenerate_icons)
+// 	. = ..()
+// 	H.mob_height = HUMAN_HEIGHT_TALL
+// 	// Не удаляем трейт! Он остаётся, но мы его переопределяем
+// 	H.update_transform()
+// 	H.update_body()
+
+// /datum/species/drask/apply_height_filter(image/appearance)
+// 	// Проверяем трейт у моба
+// 	if(HAS_TRAIT(src, TRAIT_TOO_TALL))
+// 		// Свой скейл для высоких драсков
+// 		var/matrix/M = matrix()
+// 		M.Scale(1, 1.05)  // 5% выше
+// 		appearance.transform = M
+// 		appearance.pixel_z += 4
+// 	else
+// 		// Стандартный скейл для драсков
+// 		var/matrix/M = matrix()
+// 		M.Scale(1, 1.03)
+// 		appearance.transform = M
+// 		appearance.pixel_z += 2
