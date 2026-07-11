@@ -11,44 +11,44 @@
 	lighting_cutoff = LIGHTING_CUTOFF_REAL_LOW
 	flash_protect = FLASH_PROTECTION_SENSITIVE
 
-/obj/item/organ/eyes/drask/on_mob_insert(mob/living/carbon/eyes_owner)
-	. = ..()
-	ADD_TRAIT(eyes_owner, TRAIT_LUMINESCENT_EYES, ORGAN_TRAIT)
+// /obj/item/organ/eyes/drask/on_mob_insert(mob/living/carbon/eyes_owner)
+// 	. = ..()
+// 	ADD_TRAIT(eyes_owner, TRAIT_LUMINESCENT_EYES, ORGAN_TRAIT)
 
-/obj/item/organ/eyes/drask/on_mob_remove(mob/living/carbon/eyes_owner)
-	. = ..()
-	REMOVE_TRAIT(eyes_owner, TRAIT_LUMINESCENT_EYES, ORGAN_TRAIT)
+// /obj/item/organ/eyes/drask/on_mob_remove(mob/living/carbon/eyes_owner)
+// 	. = ..()
+// 	REMOVE_TRAIT(eyes_owner, TRAIT_LUMINESCENT_EYES, ORGAN_TRAIT)
 
-/obj/item/organ/eyes/drask/generate_body_overlay(obj/item/bodypart/head/my_head)
-	// 1. Получаем стандартные два глаза от родителя
-	var/list/overlays = ..()
+// /obj/item/organ/eyes/drask/generate_body_overlay(obj/item/bodypart/head/my_head)
+// 	// 1. Получаем стандартные два глаза от родителя
+// 	var/list/overlays = ..()
 
-	if(!eye_icon_state || isnull(my_head))
-		return overlays
+// 	if(!eye_icon_state || isnull(my_head))
+// 		return overlays
 
-	// 2. Добавляем третий глаз (центр)
-	var/eye_dir = my_head.owner ? null : SOUTH
-	var/mutable_appearance/eye_center = mutable_appearance(eye_icon, "[eye_icon_state]_c", -EYES_LAYER)
-	eye_center.dir = eye_dir
+// 	// 2. Добавляем третий глаз (центр)
+// 	var/eye_dir = my_head.owner ? null : SOUTH
+// 	var/mutable_appearance/eye_center = mutable_appearance(eye_icon, "[eye_icon_state]_c", -EYES_LAYER)
+// 	eye_center.dir = eye_dir
 
-	// 3. Цвет (если есть)
-	if(my_head.head_flags & HEAD_EYECOLOR)
-		var/eye_color = my_head.owner?.get_left_eye_color() || eye_color_left
-		eye_center.color = eye_color
+// 	// 3. Цвет (если есть)
+// 	if(my_head.head_flags & HEAD_EYECOLOR)
+// 		var/eye_color = my_head.owner?.get_left_eye_color() || eye_color_left
+// 		eye_center.color = eye_color
 
-	// 4. Оффсет (если есть)
-	if(my_head.worn_face_offset)
-		my_head.worn_face_offset.apply_offset(eye_center)
+// 	// 4. Оффсет (если есть)
+// 	if(my_head.worn_face_offset)
+// 		my_head.worn_face_offset.apply_offset(eye_center)
 
-	// 5. Добавляем третий глаз в список
-	overlays += eye_center
+// 	// 5. Добавляем третий глаз в список
+// 	overlays += eye_center
 
-	// 6. Добавляет свечение для третьего глаза
-	if(my_head.owner && !(my_head.owner.obscured_slots & HIDEEYES))
-		if(HAS_TRAIT(my_head.owner, TRAIT_LUMINESCENT_EYES))
-			overlays += emissive_appearance(eye_center.icon, eye_center.icon_state, my_head, -EYES_LAYER, effect_type = EMISSIVE_BLOOM)
+// 	// 6. Добавляет свечение для третьего глаза
+// 	if(my_head.owner && !(my_head.owner.obscured_slots & HIDEEYES))
+// 		if(HAS_TRAIT(my_head.owner, TRAIT_LUMINESCENT_EYES))
+// 			overlays += emissive_appearance(eye_center.icon, eye_center.icon_state, my_head, -EYES_LAYER, effect_type = EMISSIVE_BLOOM)
 
-	return overlays
+// 	return overlays
 
 /obj/item/organ/tongue/drask
 	name = "drask tongue"

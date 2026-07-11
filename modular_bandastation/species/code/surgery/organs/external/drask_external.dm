@@ -17,7 +17,9 @@
 	var/mutable_appearance/cached_glow
 
 /datum/bodypart_overlay/mutant/arm_spines
-	layers = EXTERNAL_FRONT
+	layers = list(
+		EXTERNAL_FRONT = BODY_FRONT_LAYER
+	)
 	feature_key = FEATURE_DRASK_ARM_SPINES
 	color_source = ORGAN_COLOR_FEATURE
 	dna_color_feature_key = FEATURE_DRASK_ARM_SPINES_COLOR
@@ -32,9 +34,9 @@
 		return FALSE
 	return TRUE
 
-/datum/bodypart_overlay/mutant/arm_spines/get_overlay(layer, obj/item/bodypart/limb)
-    var/image/main_image = get_image(layer, limb)
-    color_image(main_image, layer, limb)
+/datum/bodypart_overlay/mutant/arm_spines/get_overlay(obj/item/bodypart/limb, layer_index, layer_real)
+    var/image/main_image = get_image(limb, layer_index, layer_real)
+    color_image(main_image, limb, layer_index)
 
     var/list/overlays = list(main_image)
 

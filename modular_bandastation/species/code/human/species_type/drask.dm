@@ -148,24 +148,42 @@
 			недопущения образования центров объединения и, как следствие, общественного прогресса."
 	)
 
-// /datum/species/drask/on_species_gain(mob/living/carbon/human/H, datum/species/old_species, pref_load, regenerate_icons)
+// /datum/species/drask/on_species_gain(mob/living/carbon/human/human, datum/species/old_species, pref_load, regenerate_icons = TRUE)
 // 	. = ..()
-// 	H.mob_height = HUMAN_HEIGHT_TALL
-// 	// Не удаляем трейт! Он остаётся, но мы его переопределяем
-// 	H.update_transform()
-// 	H.update_body()
+// 	RegisterSignal(human, SIGNAL_ADDTRAIT(TRAIT_TOO_TALL), PROC_REF(on_too_tall_change))
+// 	RegisterSignal(human, SIGNAL_REMOVETRAIT(TRAIT_TOO_TALL), PROC_REF(on_too_tall_change))
+// 	RegisterSignal(human, COMSIG_ATOM_UPDATE_ICON, PROC_REF(on_update_icon))
+// 	apply_drask_scale(human)
 
-// /datum/species/drask/apply_height_filter(image/appearance)
-// 	// Проверяем трейт у моба
-// 	if(HAS_TRAIT(src, TRAIT_TOO_TALL))
-// 		// Свой скейл для высоких драсков
-// 		var/matrix/M = matrix()
-// 		M.Scale(1, 1.05)  // 5% выше
-// 		appearance.transform = M
-// 		appearance.pixel_z += 4
-// 	else
-// 		// Стандартный скейл для драсков
-// 		var/matrix/M = matrix()
-// 		M.Scale(1, 1.03)
-// 		appearance.transform = M
-// 		appearance.pixel_z += 2
+// /datum/species/drask/on_species_loss(mob/living/carbon/human/human, datum/species/new_species, pref_load)
+// 	UnregisterSignal(human, SIGNAL_ADDTRAIT(TRAIT_TOO_TALL))
+// 	UnregisterSignal(human, SIGNAL_REMOVETRAIT(TRAIT_TOO_TALL))
+// 	UnregisterSignal(human, COMSIG_ATOM_UPDATE_ICON)
+// 	human.transform = matrix() // сброс
+// 	human.pixel_y = 0
+// 	. = ..()
+
+// /datum/species/drask/proc/on_too_tall_change(mob/living/carbon/human/source)
+// 	SIGNAL_HANDLER
+// 	apply_drask_scale(source)
+
+// /datum/species/drask/proc/on_update_icon(mob/living/carbon/human/source)
+// 	SIGNAL_HANDLER
+// 	apply_drask_scale(source) // восстановить масштаб после обновления иконок
+
+// /datum/species/drask/proc/apply_drask_scale(mob/living/carbon/human/human)
+// 	var/matrix/M = matrix()
+// 	var/scale_x = 1.05
+// 	var/scale_y = 1.05
+// 	if(HAS_TRAIT(human, TRAIT_TOO_TALL))
+// 		scale_y *= 1.1
+// 	var/offset_y = -round((scale_y - 1) * 16) // автоматический расчёт смещения
+// 	M.Scale(scale_x, scale_y)
+// 	M.Translate(0, offset_y)
+// 	human.transform = M
+// 	human.pixel_y = 0 // не используем, чтобы не конфликтовать
+
+// /datum/species/drask/update_species_heights(mob/living/carbon/human/holder)
+// 	if(HAS_TRAIT(holder, TRAIT_TOO_TALL))
+// 		return HUMAN_HEIGHT_TALL   // при трейте – TALL
+// 	return HUMAN_HEIGHT_MEDIUM    // без трейта – MEDIUM
