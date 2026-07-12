@@ -69,6 +69,26 @@
 	var/light_reactive = TRUE
 	/// variable to hold the eye icon state path for different eye types
 	var/icon_eyes_path = 'icons/mob/human/human_face.dmi' // BANDASTATION ADDITION  - Feat: Augmentation
+	var/list/extra_eye_positions = list() // BANDASTATION ADDITION- Feat: Extra eye
+
+// BANDASTATION ADDITION START: Extra eye hooks
+
+/obj/item/organ/eyes/proc/get_extra_eye_overlays(obj/item/bodypart/head/my_head)
+	return list()
+
+/obj/item/organ/eyes/proc/get_extra_emissive_overlays(atom/spokesman)
+	return list()
+
+/obj/item/organ/eyes/proc/get_extra_eyelid_overlays(obj/item/bodypart/head/my_head)
+	return list()
+
+/obj/item/organ/eyes/proc/animate_extra_eyelids(mob/living/carbon/human/parent, sync_blinking)
+	return
+
+/obj/item/organ/eyes/proc/blink_extra_eyelids(duration, restart_animation)
+	return
+
+// BANDASTATION ADDITION END
 
 /obj/item/organ/eyes/Initialize(mapload)
 	. = ..()
@@ -316,6 +336,8 @@
 
 	var/list/overlays = list(eye_left, eye_right)
 
+	overlays += get_extra_eye_overlays(my_head) // BANDASTATION ADDITION- Feat: Extra eye
+
 	if(my_head.owner && !(my_head.owner.obscured_slots & HIDEEYES))
 		overlays += get_emissive_overlays(eye_left, eye_right, my_head)
 
@@ -325,6 +347,7 @@
 		var/list/eyelids = get_eyelid_overlays(eye_left, eye_right, my_head)
 		if (LAZYLEN(eyelids))
 			overlays += eyelids
+		overlays += get_extra_eyelid_overlays(my_head) // BANDASTATION ADDITION - Feat: Extra eye eyelids
 
 	if (scarring & RIGHT_EYE_SCAR)
 		var/mutable_appearance/right_scar = mutable_appearance(eye_icon, "eye_scar_right", -EYES_LAYER) // BANDASTATION EDIT - Feat: Augmentation
@@ -358,6 +381,7 @@
 		return_list += emissive_blocker(eye_left.icon, eye_left.icon_state, spokesman, -EYES_LAYER, alpha = eye_left.alpha)
 		return_list += emissive_blocker(eye_right.icon, eye_right.icon_state, spokesman, -EYES_LAYER, alpha = eye_right.alpha)
 
+	return_list += get_extra_emissive_overlays(spokesman) // BANDASTATION ADDITION - Feat: Extra eye emissive
 	return return_list
 
 /obj/item/organ/eyes/update_overlays()
@@ -493,7 +517,12 @@
 	var/mutable_appearance/right_eyelid_overlay = mutable_appearance(layer = -EYES_LAYER, offset_spokesman = parent)
 	left_eyelid_overlay.render_source = "*[REF(parent)]_eyelid_left"
 	right_eyelid_overlay.render_source = "*[REF(parent)]_eyelid_right"
-	return list(left_eyelid_overlay, right_eyelid_overlay)
+	// BANDASTATION CHANGE START - Feat: Extra eyelids
+	var/list/eyelids = list(left_eyelid_overlay, right_eyelid_overlay)
+	eyelids += get_extra_eyelid_overlays(my_head)
+	return eyelids
+	// BANDASTATION CHANGE END - Feat: Extra eyelids
+	// return list(left_eyelid_overlay, right_eyelid_overlay) // BANDASTATION REMOVE
 
 /// Animates one eyelid at a time, thanks BYOND and thanks animation chains
 /obj/item/organ/eyes/proc/animate_eyelid(obj/effect/abstract/eyelid_effect/eyelid, mob/living/carbon/human/parent, sync_blinking = TRUE, list/anim_times = null)
@@ -553,6 +582,7 @@
 	animate(alpha = 0, time = 0)
 	if (restart_animation)
 		addtimer(CALLBACK(src, PROC_REF(animate_eyelids), owner), blink_delay + duration)
+	blink_extra_eyelids(duration, restart_animation) // BANDASTATION ADDITION - Feat: Extra eye blink
 
 /obj/item/organ/eyes/proc/animate_eyelids(mob/living/carbon/human/parent)
 	var/sync_blinking = synchronized_blinking && (parent.get_organ_loss(ORGAN_SLOT_BRAIN) < BRAIN_DAMAGE_ASYNC_BLINKING)
@@ -563,6 +593,7 @@
 	else
 		var/list/anim_times = animate_eyelid(eyelid_right, parent, sync_blinking)
 		animate_eyelid(eyelid_left, parent, sync_blinking, anim_times)
+	animate_extra_eyelids(parent, sync_blinking) // BANDASTATION ADDITION - Feat: Extra eye blink
 
 /obj/effect/abstract/eyelid_effect
 	name = "eyelid"
@@ -570,14 +601,20 @@
 	layer = -EYES_LAYER
 	vis_flags = VIS_INHERIT_DIR | VIS_INHERIT_PLANE | VIS_INHERIT_ID
 
-/obj/effect/abstract/eyelid_effect/Initialize(mapload, new_state)
+// BANDASTATION CHANGE START - Feat: Eyelid icon
+/obj/effect/abstract/eyelid_effect/Initialize(mapload, new_state, icon_file = null)
+	if(icon_file)
+		icon = icon_file
 	. = ..()
 	icon_state = new_state
+// BANDASTATION CHANGE END - Feat: Eyelid icon
 
-#undef BASE_BLINKING_DELAY
-#undef RAND_BLINKING_DELAY
-#undef BLINK_DURATION
-#undef BLINK_LOOPS
+// BANDASTATION REMOVE START
+// #undef BASE_BLINKING_DELAY
+// #undef RAND_BLINKING_DELAY
+// #undef BLINK_DURATION
+// #undef BLINK_LOOPS
+// BANDASTATION REMOVE END
 
 /// by default, returns the eyes' penlight_message var as a notice span. May do other things when overridden, such as eldritch insanity, or eye damage, or whatnot. Whatever you want, really.
 /obj/item/organ/eyes/proc/penlight_examine(mob/living/viewer)
