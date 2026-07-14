@@ -396,3 +396,11 @@
 
 /datum/blood_type/random_chemical/type_key()
 	return reagent_type
+
+/datum/blood_type/cryoxadone
+    name = "Cryoxadone"
+    desc = "A strange blue liquid that acts as blood for cryogenic beings. It has healing properties when cold."
+    dna_string = "Cryo DNA"
+    color = /datum/reagent/medicine/cryoxadone::color
+    reagent_type = /datum/reagent/medicine/cryoxadone
+    restoration_chem = /datum/reagent/medicine/cryoxadone

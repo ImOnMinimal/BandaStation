@@ -26,7 +26,7 @@
 	mutant_organs = list(
 		/obj/item/organ/arm_spines = /datum/sprite_accessory/drask_arm_spines/default::name,
 	)
-	exotic_bloodtype = BLOOD_TYPE_SKRELL
+	exotic_bloodtype = BLOOD_TYPE_DRASK
 
 	bodypart_overrides = list(
 		BODY_ZONE_HEAD = /obj/item/bodypart/head/drask,

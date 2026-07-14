@@ -56,6 +56,7 @@
 /// BANDASTATION ADDITION START - Species
 #define BLOOD_TYPE_MOTH "M"
 #define BLOOD_TYPE_SKRELL "SK"
+#define BLOOD_TYPE_DRASK "Cryoxadone"
 /// BANDASTATION ADDITION START - Species
 
 // Blood exposure behavior flag defines
