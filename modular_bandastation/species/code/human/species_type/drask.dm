@@ -9,7 +9,7 @@
 	id = SPECIES_DRASK
 	inherent_traits = list(
 		TRAIT_MUTANT_COLORS,
-		TRAIT_RESISTCOLD,
+		// TRAIT_RESISTCOLD,
 		TRAIT_LUMINESCENT_EYES
 	)
 	inherent_biotypes = MOB_ORGANIC | MOB_HUMANOID
@@ -25,8 +25,17 @@
 	mutantstomach = /obj/item/organ/stomach/drask
 	mutant_organs = list(
 		/obj/item/organ/arm_spines = /datum/sprite_accessory/drask_arm_spines/default::name,
+		/obj/item/organ/thermal_spine/central = "Центральный регулятор",
+		/obj/item/organ/thermal_spine/arm_l = "Нарост левой руки",
+		/obj/item/organ/thermal_spine/arm_r = "Нарост правой руки",
+		/obj/item/organ/thermal_spine/leg_l = "Нарост левой ноги",
+		/obj/item/organ/thermal_spine/leg_r = "Нарост правой ноги",
 	)
 	exotic_bloodtype = BLOOD_TYPE_DRASK
+	heatmod = 2
+	bodytemp_normal = BODYTEMP_NORMAL - 47
+	bodytemp_heat_damage_limit = BODYTEMP_HEAT_DAMAGE_LIMIT - 30
+	bodytemp_cold_damage_limit = BODYTEMP_COLD_DAMAGE_LIMIT - 120
 
 	bodypart_overrides = list(
 		BODY_ZONE_HEAD = /obj/item/bodypart/head/drask,
@@ -187,3 +196,103 @@
 // 	if(HAS_TRAIT(holder, TRAIT_TOO_TALL))
 // 		return HUMAN_HEIGHT_TALL   // при трейте – TALL
 // 	return HUMAN_HEIGHT_MEDIUM    // без трейта – MEDIUM
+
+
+
+
+
+
+// /datum/species/drask/body_temperature_damage(mob/living/carbon/human/humi, seconds_per_tick)
+// 	// Родительский метод наносит урон от жары (heatmod=2) и
+// 	// урон от холода при coretemperature < bodytemp_cold_damage_limit (150 K)
+// 	..()
+
+// 	if(humi.stat == DEAD || HAS_TRAIT(humi, TRAIT_STASIS))
+// 		return
+
+// 	var/current_core = humi.coretemperature
+// 	var/a = bodytemp_cold_damage_limit   // 150 K
+// 	var/b = bodytemp_normal              // 263 K
+// 	var/opt = 193.15                     // -80°C – пик лечения
+// 	var/max_heal = 7                     // максимальное лечение за тик
+
+// 	// Лечение только в интервале (a, b)
+// 	if(current_core <= a || current_core >= b)
+// 		return
+
+// 	var/heal = 0
+// 	if(current_core <= opt)
+// 		// Восходящая парабола: от 0 при a до max_heal при opt
+// 		var/t = (current_core - a) / (opt - a)   // t ∈ [0, 1]
+// 		heal = max_heal * t * t
+// 	else
+// 		// Нисходящая парабола: от max_heal при opt до 0 при b
+// 		var/t = (b - current_core) / (b - opt)   // t ∈ [1, 0]
+// 		heal = max_heal * t * t
+
+// 	var/heal_amount = heal * seconds_per_tick
+// 	if(heal_amount > 0)
+// 		humi.adjust_brute_loss(-heal_amount, updating_health = FALSE)
+// 		humi.adjust_fire_loss(-heal_amount, updating_health = FALSE)
+// 		humi.updatehealth()
+
+/datum/species/drask/body_temperature_core(mob/living/carbon/human/humi, seconds_per_tick)
+	var/datum/gas_mixture/environment = humi.loc?.return_air()
+	var/areatemp = humi.get_temperature(environment) || T20C
+
+	// Сбор целостности всех наростов
+	var/list/integrity_list = list()
+	for(var/slot in list(ORGAN_SLOT_THERMAL_REGULATOR, ORGAN_SLOT_ARM_SPINES_L, ORGAN_SLOT_ARM_SPINES_R, ORGAN_SLOT_LEG_SPINES_L, ORGAN_SLOT_LEG_SPINES_R))
+		var/obj/item/organ/thermal_spine/O = humi.get_organ_slot(slot)
+		if(O)
+			O.refresh_integrity()
+			integrity_list += O.integrity
+		else
+			integrity_list += 0
+
+	var/E = 0
+	for(var/integ in integrity_list)
+		E += integ
+	E /= integrity_list.len
+
+	// Сигмоида с e (2.72)
+	var/transition = 1 / (1 + (2.72 ** (-(areatemp - 150) / 20)))
+	var/cold_target = areatemp
+	var/max_overheat = 100
+	var/warm_target = bodytemp_normal + (1 - E) * max_overheat
+	warm_target = clamp(warm_target, 50, 400)
+	var/target_temp = (1 - transition) * cold_target + transition * warm_target
+
+	var/diff = target_temp - humi.coretemperature
+	var/natural_change = diff * 0.06 * seconds_per_tick
+	humi.adjust_coretemperature(humi.metabolism_efficiency * natural_change)
+
+/datum/species/drask/body_temperature_skin(mob/living/carbon/human/humi, seconds_per_tick)
+	// Копия родительской логики, но без изменения coretemperature
+	var/datum/gas_mixture/environment = humi.loc?.return_air()
+	if(!environment)
+		return
+
+	var/area_temp = humi.get_temperature(environment)
+	var/thermal_protection = humi.get_insulation_protection(area_temp)
+
+	// Изменение кожи от среды
+	var/area_skin_diff = area_temp - humi.bodytemperature
+	if(!humi.on_fire || area_skin_diff > 0)
+		var/area_skin_change = get_temp_change_amount(area_skin_diff, 0.05 * seconds_per_tick)
+		if(humi.get_body_temp_normal(apply_change=FALSE) + 10 < humi.coretemperature)
+			area_skin_change = (1 - (thermal_protection * 0.7)) * area_skin_change
+		else
+			area_skin_change = (1 - thermal_protection) * area_skin_change
+		humi.adjust_bodytemperature(area_skin_change)
+
+	// Влияние ядра на кожу (но не наоборот)
+	var/core_skin_diff = humi.coretemperature - humi.bodytemperature
+	if(!humi.on_fire)
+		var/core_skin_change = (1 + thermal_protection) * get_temp_change_amount(core_skin_diff, 0.045 * seconds_per_tick)
+		if(core_skin_diff > 0)
+			core_skin_change = min(core_skin_change, core_skin_diff)
+		else
+			core_skin_change = max(core_skin_change, core_skin_diff)
+		humi.adjust_bodytemperature(core_skin_change)
+	 // Здесь НЕТ adjust_coretemperature — ядро меняется только в body_temperature_core

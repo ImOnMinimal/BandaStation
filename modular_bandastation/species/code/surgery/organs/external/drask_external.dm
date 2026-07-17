@@ -51,3 +51,41 @@
     overlays += emissive
 
     return overlays
+
+/obj/item/organ/thermal_spine
+	name = "термонарост"
+	desc = "Орган, участвующий в терморегуляции драска."
+	icon = 'icons/bandastation/mob/species/drask/sprite_accessories/arm_spines.dmi' // используем существующий файл, при необходимости создайте свой
+	icon_state = "m_drask_arm_spines_FRONT"
+	organ_flags = ORGAN_EXTERNAL
+	var/integrity = 1.0      // 0..1
+
+/obj/item/organ/thermal_spine/Initialize(mapload)
+	. = ..()
+	refresh_integrity()
+
+/obj/item/organ/thermal_spine/proc/refresh_integrity()
+	integrity = (maxHealth - damage) / maxHealth
+
+// Центральный
+/obj/item/organ/thermal_spine/central
+	name = "центральный терморегулятор"
+	slot = ORGAN_SLOT_THERMAL_REGULATOR
+	zone = BODY_ZONE_CHEST
+
+// Наросты конечностей
+/obj/item/organ/thermal_spine/arm_l
+	slot = ORGAN_SLOT_ARM_SPINES_L
+	zone = BODY_ZONE_L_ARM
+
+/obj/item/organ/thermal_spine/arm_r
+	slot = ORGAN_SLOT_ARM_SPINES_R
+	zone = BODY_ZONE_R_ARM
+
+/obj/item/organ/thermal_spine/leg_l
+	slot = ORGAN_SLOT_LEG_SPINES_L
+	zone = BODY_ZONE_L_LEG
+
+/obj/item/organ/thermal_spine/leg_r
+	slot = ORGAN_SLOT_LEG_SPINES_R
+	zone = BODY_ZONE_R_LEG
