@@ -164,12 +164,9 @@
 #define ORGAN_SLOT_EXTERNAL_HEAD_TENTACLE_ORNAMENT "tentacle_ornament"
 #define ORGAN_SLOT_EXTERNAL_HEAD_CLOTH_WRAP "cloth_wrap"
 
-#define ORGAN_SLOT_EXTERNAL_ARM_SPINES "arm_spines"
 #define ORGAN_SLOT_THERMAL_REGULATOR "thermal_regulator"
 #define ORGAN_SLOT_ARM_SPINES_L "arm_spines_l"
 #define ORGAN_SLOT_ARM_SPINES_R "arm_spines_r"
-#define ORGAN_SLOT_LEG_SPINES_L "leg_spines_l"
-#define ORGAN_SLOT_LEG_SPINES_R "leg_spines_r"
 /// BADNASTATION ADDITION END - Species
 
 /// Xenomorph organ slots

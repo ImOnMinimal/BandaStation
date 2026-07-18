@@ -24,17 +24,14 @@
 	mutantliver = /obj/item/organ/liver/drask
 	mutantstomach = /obj/item/organ/stomach/drask
 	mutant_organs = list(
-		/obj/item/organ/arm_spines = /datum/sprite_accessory/drask_arm_spines/default::name,
 		/obj/item/organ/thermal_spine/central = "Центральный регулятор",
 		/obj/item/organ/thermal_spine/arm_l = "Нарост левой руки",
 		/obj/item/organ/thermal_spine/arm_r = "Нарост правой руки",
-		/obj/item/organ/thermal_spine/leg_l = "Нарост левой ноги",
-		/obj/item/organ/thermal_spine/leg_r = "Нарост правой ноги",
 	)
 	exotic_bloodtype = BLOOD_TYPE_DRASK
 	heatmod = 2
-	bodytemp_normal = BODYTEMP_NORMAL - 47
-	bodytemp_heat_damage_limit = BODYTEMP_HEAT_DAMAGE_LIMIT - 30
+	bodytemp_normal = BODYTEMP_NORMAL - 57
+	bodytemp_heat_damage_limit = BODYTEMP_HEAT_DAMAGE_LIMIT - 47
 	bodytemp_cold_damage_limit = BODYTEMP_COLD_DAMAGE_LIMIT - 120
 
 	bodypart_overrides = list(
@@ -50,11 +47,11 @@
 /datum/species/drask/prepare_human_for_preview(mob/living/carbon/human/human)
 	human.dna.features[FEATURE_DRASK_ARM_SPINES_COLOR] = "#66FFAA"
 	human.dna.features[FEATURE_DRASK_ARM_SPINES] = /datum/sprite_accessory/drask_arm_spines/default::name
-	for(var/obj/item/organ/O in human.organs)
-		if(istype(O, /obj/item/organ/arm_spines))
-			qdel(O)
-	var/obj/item/organ/arm_spines/T = new()
-	T.Insert(human, special = TRUE)
+	// for(var/obj/item/organ/O in human.organs)
+	// 	if(istype(O, /obj/item/organ/arm_spines))
+	// 		qdel(O)
+	// var/obj/item/organ/arm_spines/T = new()
+	// T.Insert(human, special = TRUE)
 
 	human.update_body(is_creating = TRUE)
 
@@ -236,63 +233,92 @@
 // 		humi.adjust_fire_loss(-heal_amount, updating_health = FALSE)
 // 		humi.updatehealth()
 
-/datum/species/drask/body_temperature_core(mob/living/carbon/human/humi, seconds_per_tick)
-	var/datum/gas_mixture/environment = humi.loc?.return_air()
-	var/areatemp = humi.get_temperature(environment) || T20C
-
-	// Сбор целостности всех наростов
-	var/list/integrity_list = list()
-	for(var/slot in list(ORGAN_SLOT_THERMAL_REGULATOR, ORGAN_SLOT_ARM_SPINES_L, ORGAN_SLOT_ARM_SPINES_R, ORGAN_SLOT_LEG_SPINES_L, ORGAN_SLOT_LEG_SPINES_R))
-		var/obj/item/organ/thermal_spine/O = humi.get_organ_slot(slot)
-		if(O)
-			O.refresh_integrity()
-			integrity_list += O.integrity
-		else
-			integrity_list += 0
-
-	var/E = 0
-	for(var/integ in integrity_list)
-		E += integ
-	E /= integrity_list.len
-
-	// Сигмоида с e (2.72)
-	var/transition = 1 / (1 + (2.72 ** (-(areatemp - 150) / 20)))
-	var/cold_target = areatemp
-	var/max_overheat = 100
-	var/warm_target = bodytemp_normal + (1 - E) * max_overheat
-	warm_target = clamp(warm_target, 50, 400)
-	var/target_temp = (1 - transition) * cold_target + transition * warm_target
-
-	var/diff = target_temp - humi.coretemperature
-	var/natural_change = diff * 0.06 * seconds_per_tick
-	humi.adjust_coretemperature(humi.metabolism_efficiency * natural_change)
-
 /datum/species/drask/body_temperature_skin(mob/living/carbon/human/humi, seconds_per_tick)
-	// Копия родительской логики, но без изменения coretemperature
 	var/datum/gas_mixture/environment = humi.loc?.return_air()
 	if(!environment)
 		return
-
 	var/area_temp = humi.get_temperature(environment)
 	var/thermal_protection = humi.get_insulation_protection(area_temp)
 
-	// Изменение кожи от среды
+	// 1. Влияние среды на кожу (как у людей)
 	var/area_skin_diff = area_temp - humi.bodytemperature
 	if(!humi.on_fire || area_skin_diff > 0)
 		var/area_skin_change = get_temp_change_amount(area_skin_diff, 0.05 * seconds_per_tick)
-		if(humi.get_body_temp_normal(apply_change=FALSE) + 10 < humi.coretemperature)
+		// Изменяем условие: потоотделение включается, только если ядро > -20°C + 30°C = 10°C (283K)
+		if(bodytemp_normal + 30 < humi.coretemperature) // bodytemp_normal = 253K, порог 283K (10°C)
 			area_skin_change = (1 - (thermal_protection * 0.7)) * area_skin_change
 		else
 			area_skin_change = (1 - thermal_protection) * area_skin_change
 		humi.adjust_bodytemperature(area_skin_change)
 
-	// Влияние ядра на кожу (но не наоборот)
-	var/core_skin_diff = humi.coretemperature - humi.bodytemperature
+	// 2. Расчёт эффективности E
+	var/obj/item/organ/thermal_spine/central = humi.get_organ_slot(ORGAN_SLOT_THERMAL_REGULATOR)
+	var/obj/item/organ/thermal_spine/arm_l = humi.get_organ_slot(ORGAN_SLOT_ARM_SPINES_L)
+	var/obj/item/organ/thermal_spine/arm_r = humi.get_organ_slot(ORGAN_SLOT_ARM_SPINES_R)
+	var/central_int = central?.integrity || 0
+	var/left_int = arm_l?.integrity || 0
+	var/right_int = arm_r?.integrity || 0
+	var/raw_avg = (central_int + left_int + right_int) / 3
+	var/E = raw_avg ** 1.356
+
+	// 3. Смещение кожи в сторону среды (для ранних алертов)
+	var/delta = (area_temp - humi.coretemperature) * (1 - E) * 0.4
+	delta = clamp(delta, -40, 40)
+	var/target_skin = humi.coretemperature + delta
+
+	// 4. Плавное приближение кожи к target_skin
+	var/skin_diff = target_skin - humi.bodytemperature
+	var/skin_change = get_temp_change_amount(skin_diff, 0.08 * seconds_per_tick)
+	if(skin_diff > 0)
+		skin_change = min(skin_change, skin_diff)
+	else
+		skin_change = max(skin_change, skin_diff)
+	humi.adjust_bodytemperature(skin_change)
+
+	// 5. Очень слабый теплообмен кожа->ядро
+	var/core_skin_diff = humi.bodytemperature - humi.coretemperature
 	if(!humi.on_fire)
-		var/core_skin_change = (1 + thermal_protection) * get_temp_change_amount(core_skin_diff, 0.045 * seconds_per_tick)
+		var/core_skin_change = get_temp_change_amount(core_skin_diff, 0.015 * seconds_per_tick)
 		if(core_skin_diff > 0)
 			core_skin_change = min(core_skin_change, core_skin_diff)
 		else
 			core_skin_change = max(core_skin_change, core_skin_diff)
-		humi.adjust_bodytemperature(core_skin_change)
-	 // Здесь НЕТ adjust_coretemperature — ядро меняется только в body_temperature_core
+		humi.adjust_coretemperature(core_skin_change)
+
+/datum/species/drask/body_temperature_core(mob/living/carbon/human/humi, seconds_per_tick)
+	var/datum/gas_mixture/environment = humi.loc?.return_air()
+	var/areatemp = humi.get_temperature(environment) || T20C
+
+	var/obj/item/organ/thermal_spine/central = humi.get_organ_slot(ORGAN_SLOT_THERMAL_REGULATOR)
+	var/obj/item/organ/thermal_spine/arm_l = humi.get_organ_slot(ORGAN_SLOT_ARM_SPINES_L)
+	var/obj/item/organ/thermal_spine/arm_r = humi.get_organ_slot(ORGAN_SLOT_ARM_SPINES_R)
+
+	var/central_int = central?.integrity || 0
+	var/left_int = arm_l?.integrity || 0
+	var/right_int = arm_r?.integrity || 0
+
+	var/raw_avg = (central_int + left_int + right_int) / 3
+	var/E = raw_avg ** 1.356
+
+	if (E < 0.01)
+		var/diff = bodytemp_normal - humi.coretemperature
+		var/natural_change = diff * 0.06 * seconds_per_tick
+		humi.adjust_coretemperature(humi.metabolism_efficiency * natural_change)
+		return
+
+	var/warm_target = bodytemp_normal + 93 * (1 - E) - 26 * (1 - E) ** 2
+	warm_target = clamp(warm_target, 50, 400)
+
+	var/target_temp
+	if (warm_target >= areatemp)
+		var/heating_delta = 134 * E * E - 121 * E + 27
+		heating_delta = max(heating_delta, 0)
+		target_temp = min(warm_target, areatemp + heating_delta)
+	else
+		var/cooling_delta = 80 * E - 40
+		cooling_delta = max(cooling_delta, 0)
+		target_temp = max(warm_target, areatemp - cooling_delta)
+
+	var/diff = target_temp - humi.coretemperature
+	var/natural_change = diff * 0.06 * seconds_per_tick
+	humi.adjust_coretemperature(humi.metabolism_efficiency * natural_change)

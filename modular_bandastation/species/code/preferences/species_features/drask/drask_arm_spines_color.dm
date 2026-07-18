@@ -2,7 +2,7 @@
 	savefile_key = "drask_arm_spines_color"
 	savefile_identifier = PREFERENCE_CHARACTER
 	category = PREFERENCE_CATEGORY_SECONDARY_FEATURES
-	relevant_organ = /obj/item/organ/arm_spines
+	relevant_organ = /obj/item/organ/thermal_spine/arm_l
 
 /datum/preference/color/drask_arm_spines_color/create_default_value()
 	return "#66FFAA"

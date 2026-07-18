@@ -4,7 +4,7 @@
 	category = PREFERENCE_CATEGORY_FEATURES
 	main_feature_name = "Наросты на руках"
 	should_generate_icons = TRUE
-	relevant_organ = /obj/item/organ/arm_spines
+	relevant_organ = /obj/item/organ/thermal_spine/arm_l
 
 /datum/preference/choiced/species_feature/drask_arm_spines/get_accessory_list()
 	return SSaccessories.feature_list[FEATURE_DRASK_ARM_SPINES]
