@@ -322,3 +322,4 @@
 	var/diff = target_temp - humi.coretemperature
 	var/natural_change = diff * 0.06 * seconds_per_tick
 	humi.adjust_coretemperature(humi.metabolism_efficiency * natural_change)
+

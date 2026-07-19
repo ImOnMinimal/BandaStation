@@ -882,6 +882,8 @@ generate/load female uniform sprites matching all previously decided variables
 	var/static/icon/lenghten_legs_mask = icon('icons/effects/cut.dmi', "Cut4")
 	var/static/icon/lenghten_arms_mask = icon('icons/effects/cut.dmi', "Cut5")
 
+	var/species_id = dna?.species?.id // BANDASTATION ADDITION - Drask height
+
 	appearance.remove_filter(list(
 		"Cut_Torso",
 		"Cut_Legs",
@@ -970,35 +972,78 @@ generate/load female uniform sprites matching all previously decided variables
 		if(HUMAN_HEIGHT_TALL)
 			appearance.add_filter("Lenghten_Legs", 1, displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1))
 		if(HUMAN_HEIGHT_TALLER)
-			appearance.add_filters(list(
-				list(
-					"name" = "Lenghten_Torso",
-					"priority" = 1,
-					"params" = displacement_map_filter(lenghten_torso_mask, x = 0, y = 0, size = 1),
-				),
-				list(
-					"name" = "Lenghten_Legs",
-					"priority" = 1,
-					"params" = displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1),
-				),
+			// BANDASTATION CHANGE START - Drask height
+			if(species_id == SPECIES_DRASK)
+				appearance.add_filter("Lenghten_Legs", 1, displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1))
+			else
+				appearance.add_filters(list(
+					list(
+						"name" = "Lenghten_Torso",
+						"priority" = 1,
+						"params" = displacement_map_filter(lenghten_torso_mask, x = 0, y = 0, size = 1),
+					),
+					list(
+						"name" = "Lenghten_Legs",
+						"priority" = 1,
+						"params" = displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1),
+					),
+			// BANDASTATION CHANGE END - Drask height
+
+			// BANDASTATION REMOVE START - Drask height
+			// appearance.add_filters(list(
+			// 		list(
+			// 			"name" = "Lenghten_Torso",
+			// 			"priority" = 1,
+			// 			"params" = displacement_map_filter(lenghten_torso_mask, x = 0, y = 0, size = 1),
+			// 		),
+			// 		list(
+			// 			"name" = "Lenghten_Legs",
+			// 			"priority" = 1,
+			// 			"params" = displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1),
+			// 		),
+			// BANDASTATION REMOVE END - Drask height
 			))
 		if(HUMAN_HEIGHT_TALLEST)
-			appearance.add_filters(list(
-				list(
-					"name" = "Lenghten_Torso",
-					"priority" = 1,
-					"params" = displacement_map_filter(lenghten_torso_mask, x = 0, y = 0, size = 1),
-				),
-				list(
-					"name" = "Lenghten_Arms",
-					"priority" = 1,
-					"params" = displacement_map_filter(lenghten_arms_mask, x = 0, y = 0, size = 1),
-				),
-				list(
-					"name" = "Lenghten_Legs",
-					"priority" = 1,
-					"params" = displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1),
-				),
+			// BANDASTATION CHANGE START - Drask height
+			if(species_id == SPECIES_DRASK)
+				appearance.add_filter("Lenghten_Legs", 1, displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1))
+			else
+				appearance.add_filters(list(
+					list(
+						"name" = "Lenghten_Torso",
+						"priority" = 1,
+						"params" = displacement_map_filter(lenghten_torso_mask, x = 0, y = 0, size = 1),
+					),
+					list(
+						"name" = "Lenghten_Arms",
+						"priority" = 1,
+						"params" = displacement_map_filter(lenghten_arms_mask, x = 0, y = 0, size = 1),
+					),
+					list(
+						"name" = "Lenghten_Legs",
+						"priority" = 1,
+						"params" = displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1),
+					),
+			// BANDASTATION CHANGE END - Drask height
+
+			// BANDASTATION REMOVE START - Drask height
+			// appearance.add_filters(list(
+			// 		list(
+			// 			"name" = "Lenghten_Torso",
+			// 			"priority" = 1,
+			// 			"params" = displacement_map_filter(lenghten_torso_mask, x = 0, y = 0, size = 1),
+			// 		),
+			// 		list(
+			// 			"name" = "Lenghten_Arms",
+			// 			"priority" = 1,
+			// 			"params" = displacement_map_filter(lenghten_arms_mask, x = 0, y = 0, size = 1),
+			// 		),
+			// 		list(
+			// 			"name" = "Lenghten_Legs",
+			// 			"priority" = 1,
+			// 			"params" = displacement_map_filter(lenghten_legs_mask, x = 0, y = 0, size = 1),
+			// 		),
+			// BANDASTATION REMOVE END - Drask height
 			))
 
 	// Kinda gross but because many humans overlays do not use KEEP_TOGETHER we need to manually propogate the filter
