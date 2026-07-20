@@ -108,6 +108,7 @@
 
 #define FEATURE_DRASK_ARM_SPINES "drask_arm_spines"
 #define FEATURE_DRASK_ARM_SPINES_COLOR "drask_arm_spines_color"
+#define FEATURE_DRASK_SKIN_TONE "drask_skin_tone"
 // BANDASTATION ADDITION END - Species Features
 
 // flag for the transfer_flag argument from dna/proc/copy_dna().

@@ -9,7 +9,7 @@
 	id = SPECIES_DRASK
 	inherent_traits = list(
 		TRAIT_MUTANT_COLORS,
-		// TRAIT_RESISTCOLD,
+		TRAIT_FIXED_MUTANT_COLORS,
 		TRAIT_LUMINESCENT_EYES
 	)
 	inherent_biotypes = MOB_ORGANIC | MOB_HUMANOID
@@ -47,12 +47,8 @@
 /datum/species/drask/prepare_human_for_preview(mob/living/carbon/human/human)
 	human.dna.features[FEATURE_DRASK_ARM_SPINES_COLOR] = "#66FFAA"
 	human.dna.features[FEATURE_DRASK_ARM_SPINES] = /datum/sprite_accessory/drask_arm_spines/default::name
-	// for(var/obj/item/organ/O in human.organs)
-	// 	if(istype(O, /obj/item/organ/arm_spines))
-	// 		qdel(O)
-	// var/obj/item/organ/arm_spines/T = new()
-	// T.Insert(human, special = TRUE)
-
+	human.dna.features[FEATURE_DRASK_SKIN_TONE] = "drask_mid"
+	human.dna.features[FEATURE_MUTANT_COLOR] = get_drask_hex("drask_mid")
 	human.update_body(is_creating = TRUE)
 
 /datum/species/drask/randomize_features()
@@ -62,6 +58,19 @@
 		/datum/sprite_accessory/drask_arm_spines/default1::name,
 	)
 	return features
+
+/datum/species/drask/get_features()
+	. = ..()
+	. |= FEATURE_DRASK_SKIN_TONE
+	// . -= "skin_tone"
+	// . -= "mutant_color"
+
+/datum/species/drask/on_species_gain(mob/living/carbon/human/human, datum/species/old_species, pref_load, regenerate_icons = TRUE)
+	. = ..()
+	if(!human.dna.features[FEATURE_DRASK_SKIN_TONE])
+		human.dna.features[FEATURE_DRASK_SKIN_TONE] = "drask_mid"
+	human.dna.features[FEATURE_MUTANT_COLOR] = get_drask_hex(human.dna.features[FEATURE_DRASK_SKIN_TONE])
+	human.update_body()
 
 /datum/species/drask/create_pref_unique_perks()
 	var/list/to_add = list()

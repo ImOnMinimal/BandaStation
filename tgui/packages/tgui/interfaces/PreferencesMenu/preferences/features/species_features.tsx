@@ -287,3 +287,8 @@ export const drask_arm_spines_color: Feature<string> = {
   name: 'Шипы драска - цвет',
   component: FeatureColorInput,
 };
+
+export const drask_skin_tone: FeatureChoiced = {
+  name: 'Тон кожи (Драск)',
+  component: FeatureDropdownInput,
+};

@@ -244,4 +244,19 @@
 
 /datum/dna_block/feature/drask_arm_spines_color/apply_to_mob(mob/living/carbon/human/target, dna_hash)
 	target.dna.features[feature_key] = sanitize_hexcolor(get_block(dna_hash))
+
+/datum/dna_block/feature/accessory/drask_skin_tone
+	feature_key = FEATURE_DRASK_SKIN_TONE
+
+/datum/dna_block/feature/accessory/drask_skin_tone/create_unique_block(mob/living/carbon/human/target)
+	var/list/possible = GLOB.drask_skin_tones
+	var/current = target.dna.features[feature_key]
+	var/index = possible.Find(current) || 1
+	return construct_block(index, length(possible))
+
+/datum/dna_block/feature/accessory/drask_skin_tone/apply_to_mob(mob/living/carbon/human/target, dna_hash)
+	var/list/possible = GLOB.drask_skin_tones
+	var/max = length(possible)
+	var/index = deconstruct_block(get_block(dna_hash), max)
+	target.dna.features[feature_key] = possible[index] || possible[1]
 // BANDASTATION ADD END - Species

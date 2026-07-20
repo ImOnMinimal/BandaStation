@@ -4,6 +4,8 @@
 
 #include "code/clothing/items.dm"
 
+#include "code/preferences/species_features/drask/drask_skin_tone.dm"
+
 #include "code/human/species/skills.dm"
 #include "code/human/species_type/moth.dm"
 #include "code/human/species_type/drask.dm"
