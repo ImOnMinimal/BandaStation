@@ -48,7 +48,7 @@
 	human.dna.features[FEATURE_DRASK_ARM_SPINES_COLOR] = "#66FFAA"
 	human.dna.features[FEATURE_DRASK_ARM_SPINES] = /datum/sprite_accessory/drask_arm_spines/default::name
 	human.dna.features[FEATURE_DRASK_SKIN_TONE] = "drask_mid"
-	human.dna.features[FEATURE_MUTANT_COLOR] = get_drask_hex("drask_mid")
+	human.dna.features[FEATURE_MUTANT_COLOR] = get_drask_tone_color("drask_mid")
 	human.update_body(is_creating = TRUE)
 
 /datum/species/drask/randomize_features()
@@ -69,7 +69,7 @@
 	. = ..()
 	if(!human.dna.features[FEATURE_DRASK_SKIN_TONE])
 		human.dna.features[FEATURE_DRASK_SKIN_TONE] = "drask_mid"
-	human.dna.features[FEATURE_MUTANT_COLOR] = get_drask_hex(human.dna.features[FEATURE_DRASK_SKIN_TONE])
+	human.dna.features[FEATURE_MUTANT_COLOR] = get_drask_tone_color(human.dna.features[FEATURE_DRASK_SKIN_TONE])
 	human.update_body()
 
 /datum/species/drask/create_pref_unique_perks()
