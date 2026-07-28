@@ -163,6 +163,21 @@
 			недопущения образования центров объединения и, как следствие, общественного прогресса."
 	)
 
+/datum/species/drask/on_species_gain(mob/living/carbon/human/human, datum/species/old_species, pref_load, regenerate_icons = TRUE)
+	. = ..()
+	// Устанавливаем рост сразу, но он может быть сброшен позже
+	human.mob_height = HUMAN_HEIGHT_TALLER
+	// Откладываем финальную установку на следующий тик
+	addtimer(CALLBACK(src, PROC_REF(apply_drask_height), human), 0)
+
+/// Принудительно применяем рост и обновляем все спрайты
+/datum/species/drask/proc/apply_drask_height(mob/living/carbon/human/human)
+	if(!istype(human) || QDELETED(human))
+		return
+	human.mob_height = HUMAN_HEIGHT_TALLER
+	// Полное перестроение всех оверлеев – гарантирует применение фильтров высоты ко всему
+	human.regenerate_icons()
+
 // /datum/species/drask/on_species_gain(mob/living/carbon/human/human, datum/species/old_species, pref_load, regenerate_icons = TRUE)
 // 	. = ..()
 // 	RegisterSignal(human, SIGNAL_ADDTRAIT(TRAIT_TOO_TALL), PROC_REF(on_too_tall_change))

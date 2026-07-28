@@ -39,42 +39,50 @@ GLOBAL_LIST_INIT(drask_skin_tones, list(
 	data["to_hex"] = to_hex
 	return data
 
-// Ограничиваем показ только для Drask
 /datum/preference/choiced/drask_skin_tone/has_relevant_feature(datum/preferences/preferences)
 	var/species_type = preferences.read_preference(/datum/preference/choiced/species)
 	return species_type == /datum/species/drask
 
-// ========== Функция для интерфейса (превью в меню) ==========
 /proc/get_drask_hex(choice)
-    switch(choice)
-        if("drask_lightest") return "#ededed"
-        if("drask_lighter")  return "#dcdcdc"
-        if("drask_light")    return "#c2c2c2"
-        if("drask_mid")      return "#949494"
-        if("drask_dark")     return "#7a7a7a"
-        if("drask_darker")   return "#4f4f4f"
-        if("drask_darkest")  return "#313131"
-        else                 return "#949494"
+	switch(choice)
+		if("drask_lightest")
+			return "#ededed"
+		if("drask_lighter")
+			return "#dcdcdc"
+		if("drask_light")
+			return "#c2c2c2"
+		if("drask_mid")
+			return "#949494"
+		if("drask_dark")
+			return "#7a7a7a"
+		if("drask_darker")
+			return "#4f4f4f"
+		if("drask_darkest")
+			return "#313131"
+		else
+			return "#949494"
 
-// ========== Функция для получения цвета тона (заполняется художником) ==========
-// Здесь художник может подставить любые HEX-цвета, которые считает красивыми
-// Для каждого основного цвета можно сделать отдельный список, но пока пусть будет один универсальный
 /proc/get_drask_tone_color(choice)
-    switch(choice)
-        if("drask_lightest") return "#D4F0D4"   // очень светлый зелёный
-        if("drask_lighter")  return "#B0D8B0"   // светлый зелёный
-        if("drask_light")    return "#80B880"   // средний зелёный
-        if("drask_mid")      return "#509050"   // тёмно-зелёный
-        if("drask_dark")     return "#306830"   // ещё темнее
-        if("drask_darker")   return "#184018"   // почти чёрный с зеленью
-        if("drask_darkest")  return "#082008"   // очень тёмный
-        else                 return "#509050"   // запасной
-
-// ========== Применение к персонажу ==========
+	switch(choice)
+		if("drask_lightest")
+			return "#c0c0ff"
+		if("drask_lighter")
+			return "#f8f8c5"
+		if("drask_light")
+			return "#c0c0c0"
+		if("drask_mid")
+			return "#a9a9a9"
+		if("drask_dark")
+			return "#808080"
+		if("drask_darker")
+			return "#505050"
+		if("drask_darkest")
+			return "#303030"
+		else
+			return "#509050"
 /datum/preference/choiced/drask_skin_tone/apply_to_human(mob/living/carbon/human/target, value)
     target.dna.features[FEATURE_DRASK_SKIN_TONE] = value
     var/tone_color = get_drask_tone_color(value)
-    // Применяем фильтр, как в баллончике — сохраняет объём и насыщенность
     target.color = color_transition_filter(tone_color, SATURATION_MULTIPLY)
     target.update_body()
 
