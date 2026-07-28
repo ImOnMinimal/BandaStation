@@ -882,7 +882,7 @@ generate/load female uniform sprites matching all previously decided variables
 	var/static/icon/lenghten_legs_mask = icon('icons/effects/cut.dmi', "Cut4")
 	var/static/icon/lenghten_arms_mask = icon('icons/effects/cut.dmi', "Cut5")
 
-	var/species_id = dna?.species?.id // BANDASTATION ADDITION - Drask height
+	// var/species_id = dna?.species?.id // BANDASTATION ADDITION - Drask height
 
 	appearance.remove_filter(list(
 		"Cut_Torso",
